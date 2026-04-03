@@ -82,7 +82,7 @@ export async function GET() {
     const { volumes, logos: geckoLogos } = await fetchCoinGeckoData(geckoIds);
 
     // Build coin list
-    const coins = filtered.map((asset: any, idx: number) => {
+    let coins = filtered.map((asset: any, idx: number) => {
       const sym = asset.symbol;
       const meta = COIN_META[sym];
       const geckoId = asset.gecko_id || meta?.geckoId || "";
@@ -155,6 +155,16 @@ export async function GET() {
         pegMechanism: asset.pegMechanism || "",
       };
     }).filter(Boolean);
+
+    // Deduplicate by symbol — keep the one with higher supply
+    const seen = new Map();
+    for (const coin of coins) {
+      const existing = seen.get(coin.symbol);
+      if (!existing || coin.supply > existing.supply) {
+        seen.set(coin.symbol, coin);
+      }
+    }
+    coins = [...seen.values()];
 
     // Sort by supply descending and assign ranks
     coins.sort((a: any, b: any) => b.supply - a.supply);
