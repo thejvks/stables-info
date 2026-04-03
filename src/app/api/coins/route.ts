@@ -59,15 +59,19 @@ export async function GET() {
   try {
     const assets = await fetchDefiLlama();
 
-    // Filter to stablecoins with >$50M supply
+    // Filter to stablecoins with >$10M supply (includes EUR, JPY pegged)
     const filtered = assets.filter((a: any) => {
       const supply =
         a.circulating?.peggedUSD ||
+        a.circulating?.peggedEUR ||
+        a.circulating?.peggedJPY ||
+        a.circulating?.peggedCNY ||
+        a.circulating?.peggedGBP ||
         Object.values(a.chainCirculating || {}).reduce(
-          (sum: number, ch: any) => sum + (ch?.current?.peggedUSD || 0),
+          (sum: number, ch: any) => sum + (ch?.current?.peggedUSD || ch?.current?.peggedEUR || 0),
           0
         );
-      return supply > 50_000_000;
+      return supply > 10_000_000;
     });
 
     // Get all gecko IDs for volume fetch
@@ -83,22 +87,36 @@ export async function GET() {
       const meta = COIN_META[sym];
       const geckoId = asset.gecko_id || meta?.geckoId || "";
       const price = asset.price || 1.0;
+      const pegType = asset.pegType || "peggedUSD";
+      const pegCurrency = pegType === "peggedEUR" ? "EUR" : pegType === "peggedJPY" ? "JPY" : pegType === "peggedGBP" ? "GBP" : pegType === "peggedCNY" ? "CNY" : "USD";
+      const pegSymbol = pegCurrency === "EUR" ? "\u20AC" : pegCurrency === "JPY" ? "\u00A5" : pegCurrency === "GBP" ? "\u00A3" : "$";
+      // For non-USD pegs, DeFiLlama reports price in USD
+      // EUR coins trade at ~$1.15 (EUR/USD rate), JPY at ~$0.006, GBP at ~$1.33
+      // We calculate deviation relative to the expected USD price for that currency
+      const FX_RATES: Record<string, number> = { USD: 1.0, EUR: 1.15, JPY: 0.0065, GBP: 1.33, CNY: 0.14 };
+      const expectedPrice = FX_RATES[pegCurrency] || 1.0;
+
       const supply =
         asset.circulating?.peggedUSD ||
+        asset.circulating?.peggedEUR ||
+        asset.circulating?.peggedJPY ||
+        asset.circulating?.peggedGBP ||
+        asset.circulating?.peggedCNY ||
         Object.values(asset.chainCirculating || {}).reduce(
-          (sum: number, ch: any) => sum + (ch?.current?.peggedUSD || 0),
+          (sum: number, ch: any) => sum + (ch?.current?.peggedUSD || ch?.current?.peggedEUR || 0),
           0
         );
       const isYield = YIELD_BEARING_SYMBOLS.has(sym);
-      const deviation = isYield
-        ? Math.abs(price - 1.0) * 100
-        : Math.abs(price - 1.0) * 100;
+      const deviation = Math.abs(price - expectedPrice) / expectedPrice * 100;
+
+      // Skip dead/depegged coins (deviation > 20% for non-yield USD coins)
+      if (pegCurrency === "USD" && !isYield && deviation > 20) return null;
 
       // Chain breakdown
       const chains: { chain: string; supply: number; logo: string }[] = [];
       if (asset.chainCirculating) {
         for (const [chainKey, chainData] of Object.entries(asset.chainCirculating)) {
-          const chainSupply = (chainData as any)?.current?.peggedUSD || 0;
+          const chainSupply = (chainData as any)?.current?.peggedUSD || (chainData as any)?.current?.peggedEUR || (chainData as any)?.current?.peggedJPY || 0;
           if (chainSupply > 0) {
             const displayName = chainKey.charAt(0).toUpperCase() + chainKey.slice(1);
             chains.push({
@@ -115,10 +133,13 @@ export async function GET() {
         rank: 0, // will set after sorting
         symbol: sym,
         name: meta?.name || asset.name || sym,
-        price: Math.round(price * 10000) / 10000,
+        price: Math.round((price / expectedPrice) * 10000) / 10000, // normalized to peg currency
         deviation: Math.round(deviation * 1000) / 1000,
         supply,
+        marketCap: Math.round(supply * price), // supply × USD price
         volume24h: volumes[geckoId] || 0,
+        pegCurrency,
+        pegSymbol,
         yieldBearing: isYield,
         type: meta?.type || "Unknown",
         issuer: meta?.issuer || "",
@@ -133,7 +154,7 @@ export async function GET() {
         chains,
         pegMechanism: asset.pegMechanism || "",
       };
-    });
+    }).filter(Boolean);
 
     // Sort by supply descending and assign ranks
     coins.sort((a: any, b: any) => b.supply - a.supply);
@@ -148,7 +169,7 @@ export async function GET() {
     }
 
     const totalSupply = coins.reduce((s: number, c: any) => s + c.supply, 0);
-    const deviations = coins.filter((c: any) => !c.yieldBearing).map((c: any) => c.deviation);
+    const deviations = coins.filter((c: any) => !c.yieldBearing && (c.pegCurrency === "USD" || !c.pegCurrency)).map((c: any) => c.deviation);
     const avgDev = deviations.length > 0 ? deviations.reduce((s: number, d: number) => s + d, 0) / deviations.length : 0;
     const maxDev = deviations.length > 0 ? Math.max(...deviations) : 0;
     const uniqueChains = new Set<string>();

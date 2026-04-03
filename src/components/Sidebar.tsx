@@ -65,17 +65,9 @@ export default function Sidebar() {
     {/* Sidebar */}
     <div className={`sidebar fixed left-0 top-0 h-screen w-[220px] flex flex-col py-6 px-4 z-50 transition-transform duration-300 ${mobileOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
       {/* Logo + theme toggle — hidden on mobile since mobile top bar handles it */}
-      <div className="mb-8 px-2 hidden md:block">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Logo size={32} />
-            <h1 className="text-xl font-black tracking-tight">
-              <span style={{ color: "var(--text-primary)" }}>stables</span>
-              <span className="text-purple-500 text-sm font-bold ml-1">info</span>
-            </h1>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 mt-1">
+      <div className="mb-8 px-2 hidden md:flex flex-col items-center">
+        <Logo size={72} />
+        <div className="flex items-center gap-2 mt-2">
           <div className="live-dot" />
           <span className="text-xs" style={{ color: "var(--text-muted)" }}>Live monitoring</span>
         </div>
@@ -113,14 +105,16 @@ export default function Sidebar() {
 
       {/* Footer */}
       <div className="px-2 pt-4 border-t hidden md:block" style={{ borderColor: "var(--glass-border)" }}>
-        <div className="flex items-center justify-between mb-2">
-          <p className="text-[10px] leading-relaxed" style={{ color: "var(--text-muted)" }}>
-            <span style={{ opacity: 0.6 }}>not financial advice</span>
-          </p>
+        <div className="flex items-center justify-between mb-1">
+          <div>
+            <span className="text-sm font-black" style={{ color: "var(--text-primary)" }}>stables</span>
+            <span className="text-purple-500 text-xs font-bold ml-1">info</span>
+          </div>
           <button onClick={cycleTheme} className="theme-toggle" title={`Theme: ${theme} — click to change`}>
             {THEME_ICONS[theme] || "🎨"}
           </button>
         </div>
+        <p className="text-[10px]" style={{ color: "var(--text-muted)", opacity: 0.5 }}>not financial advice</p>
       </div>
     </div>
     </>

@@ -6,7 +6,8 @@ import { CHAIN_LOGOS } from "../lib/coins-data";
 interface ChainInfo { chain: string; supply: number; logo: string; }
 interface Coin {
   rank: number; symbol: string; name: string; price: number;
-  deviation: number; supply: number; volume24h: number;
+  deviation: number; supply: number; marketCap: number; volume24h: number;
+  pegCurrency: string; pegSymbol: string;
   yieldBearing: boolean; type: string; logo: string;
   geckoId: string; geckoUrl: string; whitepaperUrl: string;
   chains: ChainInfo[]; tldr: string;
@@ -37,9 +38,11 @@ function StatCard({ value, label, color }: { value: string; label: string; color
 
 const TIERS = [
   { label: "All", filter: () => true },
+  { label: "USD", filter: (c: Coin) => (c.pegCurrency || "USD") === "USD" },
+  { label: "EUR", filter: (c: Coin) => c.pegCurrency === "EUR" },
+  { label: "JPY", filter: (c: Coin) => c.pegCurrency === "JPY" },
+  { label: "GBP", filter: (c: Coin) => c.pegCurrency === "GBP" },
   { label: ">$1B", filter: (c: Coin) => c.supply >= 1e9 },
-  { label: "$100M–$1B", filter: (c: Coin) => c.supply >= 1e8 && c.supply < 1e9 },
-  { label: "<$100M", filter: (c: Coin) => c.supply < 1e8 },
   { label: "Yield", filter: (c: Coin) => c.yieldBearing },
 ];
 
@@ -60,9 +63,12 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-[80vh] gap-4">
-        <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
-        <p className="text-slate-500 text-sm">Fetching live stablecoin data from DeFiLlama + CoinGecko...</p>
+      <div className="flex flex-col items-center justify-center h-[80vh] gap-3">
+        <div className="flex gap-1">
+          <div className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: "0ms" }} />
+          <div className="w-2 h-2 rounded-full bg-purple-400 animate-bounce" style={{ animationDelay: "150ms" }} />
+          <div className="w-2 h-2 rounded-full bg-purple-300 animate-bounce" style={{ animationDelay: "300ms" }} />
+        </div>
       </div>
     );
   }
@@ -136,7 +142,8 @@ export default function Home() {
         <span className="flex-1 min-w-0">Coin</span>
         <span className="w-[70px] md:w-[90px] text-right">Price</span>
         <span className="w-[60px] md:w-[80px] text-right">Dev</span>
-        <span className="w-[65px] md:w-[85px] text-right hidden sm:block">Supply</span>
+        <span className="w-[70px] md:w-[80px] text-right hidden sm:block">Supply</span>
+        <span className="w-[70px] md:w-[80px] text-right hidden lg:block">MCap</span>
         <span className="w-[75px] text-right hidden lg:block">Vol 24h</span>
         <span className="w-[120px] text-center hidden md:block">Chains</span>
         <span className="w-[90px] text-center hidden md:block">Links</span>
@@ -179,18 +186,20 @@ export default function Home() {
               </span>
 
               <span className="flex-1 min-w-0 flex items-center gap-1.5">
-                <a href={coin.geckoUrl || "#"} target="_blank" rel="noopener noreferrer"
-                   className="text-slate-200 font-bold text-sm hover:text-purple-300 transition-colors">
+                <span className="text-slate-200 font-bold text-sm">
                   {coin.symbol}
-                </a>
+                </span>
                 <span className="text-slate-600 text-[11px] truncate">{coin.name}</span>
                 {coin.yieldBearing && (
                   <span className="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/15 text-purple-400 font-medium">YIELD</span>
                 )}
+                {coin.pegCurrency && coin.pegCurrency !== "USD" && (
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-400 font-medium">{coin.pegCurrency}</span>
+                )}
               </span>
 
               <span className="w-[70px] md:w-[90px] text-right text-white font-mono font-bold text-xs md:text-sm">
-                ${coin.price.toFixed(4)}
+                {coin.pegSymbol || "$"}{coin.price.toFixed(4)}
               </span>
 
               <span className="w-[60px] md:w-[80px] text-right">
@@ -205,7 +214,8 @@ export default function Home() {
                 )}
               </span>
 
-              <span className="w-[65px] md:w-[85px] text-right text-slate-400 text-xs md:text-sm font-medium hidden sm:block">{fmt(coin.supply)}</span>
+              <span className="w-[70px] md:w-[80px] text-right text-slate-400 text-xs md:text-sm font-medium hidden sm:block">{fmt(coin.supply)}</span>
+              <span className="w-[70px] md:w-[80px] text-right text-slate-500 text-xs hidden lg:block">{fmt(coin.marketCap || coin.supply)}</span>
 
               <span className={`w-[75px] text-right text-sm hidden lg:block ${volColor}`}>{fmt(coin.volume24h)}</span>
 
@@ -239,19 +249,19 @@ export default function Home() {
 
               <span className="w-[90px] justify-center gap-2 items-center hidden md:flex">
                 {coin.geckoUrl && (
-                  <a href={coin.geckoUrl} target="_blank" rel="noopener noreferrer" title="CoinGecko"
-                     className="text-[11px] text-emerald-500/70 hover:text-emerald-400 transition-colors font-bold">
-                    CG
+                  <a href={coin.geckoUrl} target="_blank" rel="noopener noreferrer" title="CoinGecko">
+                    <img src="https://www.coingecko.com/favicon.ico" className="w-4 h-4 rounded opacity-50 hover:opacity-100 transition-opacity" alt="CG" />
                   </a>
                 )}
-                <a href="https://defillama.com/stablecoins" target="_blank" rel="noopener noreferrer" title="DeFiLlama"
-                   className="text-[11px] text-blue-500/70 hover:text-blue-400 transition-colors font-bold">
-                  DL
+                <a href="https://defillama.com/stablecoins" target="_blank" rel="noopener noreferrer" title="DeFiLlama">
+                  <img src="https://defillama.com/defillama-press-kit/defi/SVG/defillama-dark.svg" className="w-4 h-4 rounded opacity-50 hover:opacity-100 transition-opacity" alt="DL"
+                    onError={(e) => { (e.target as HTMLImageElement).src = "https://icons.llamao.fi/icons/protocols/defillama"; }} />
                 </a>
                 {coin.whitepaperUrl && (
-                  <a href={coin.whitepaperUrl} target="_blank" rel="noopener noreferrer" title="Docs / Whitepaper"
-                     className="text-[11px] text-purple-400/70 hover:text-purple-300 transition-colors font-bold">
-                    docs
+                  <a href={coin.whitepaperUrl} target="_blank" rel="noopener noreferrer" title="Whitepaper / Docs">
+                    <svg className="w-4 h-4 opacity-50 hover:opacity-100 transition-opacity" fill="none" stroke="#a78bfa" strokeWidth={1.5} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                    </svg>
                   </a>
                 )}
               </span>
