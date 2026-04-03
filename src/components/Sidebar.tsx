@@ -14,9 +14,12 @@ const NAV_ITEMS = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const THEMES = ["dark", "midnight", "emerald", "slate"] as const;
-  const THEME_ICONS: Record<string, string> = {
-    dark: "🌑", midnight: "🌊", emerald: "🌿", slate: "🪨",
+  const THEMES = ["btc", "eth", "sol", "bnb"] as const;
+  const THEME_META: Record<string, { name: string; logo: string }> = {
+    btc: { name: "Bitcoin", logo: "https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png" },
+    eth: { name: "Ethereum", logo: "https://coin-images.coingecko.com/coins/images/279/large/ethereum.png" },
+    sol: { name: "Solana", logo: "https://coin-images.coingecko.com/coins/images/4128/large/solana.png" },
+    bnb: { name: "BNB Chain", logo: "https://coin-images.coingecko.com/coins/images/825/large/bnb-icon2_2x.png" },
   };
   const [theme, setTheme] = useState<string>("dark");
 
@@ -55,7 +58,7 @@ export default function Sidebar() {
       <span className="font-black text-sm ml-1" style={{ color: "var(--text-primary)" }}>stables <span className="text-purple-500 text-xs">info</span></span>
       <div className="live-dot ml-2" />
       <button onClick={cycleTheme} className="theme-toggle ml-auto !w-8 !h-8 text-sm">
-        {THEME_ICONS[theme] || "🎨"}
+        <img src={THEME_META[theme]?.logo} alt={THEME_META[theme]?.name} className="w-5 h-5 rounded-full" />
       </button>
     </div>
 
@@ -110,8 +113,8 @@ export default function Sidebar() {
             <span className="text-sm font-black" style={{ color: "var(--text-primary)" }}>stables</span>
             <span className="text-purple-500 text-xs font-bold ml-1">info</span>
           </div>
-          <button onClick={cycleTheme} className="theme-toggle" title={`Theme: ${theme} — click to change`}>
-            {THEME_ICONS[theme] || "🎨"}
+          <button onClick={cycleTheme} className="theme-toggle" title={`${THEME_META[theme]?.name} theme — click to change`}>
+            <img src={THEME_META[theme]?.logo} alt={THEME_META[theme]?.name} className="w-5 h-5 rounded-full" />
           </button>
         </div>
         <p className="text-[10px]" style={{ color: "var(--text-muted)", opacity: 0.5 }}>not financial advice</p>
