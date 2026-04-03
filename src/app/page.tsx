@@ -130,7 +130,7 @@ export default function Home() {
       </div>
 
       {/* Table header */}
-      <div className="flex items-center px-4 py-2 text-[10px] uppercase tracking-widest text-slate-600 border-b border-purple-900/20 sticky top-0 bg-[#0f0b1e] z-10">
+      <div className="flex items-center px-4 py-2 text-[10px] uppercase tracking-widest text-slate-400 font-semibold border-b border-purple-900/20 sticky top-0 z-10" style={{ background: "var(--bg-primary)" }}>
         <span className="w-10">#</span>
         <span className="w-7"></span>
         <span className="flex-1 min-w-0">Coin</span>
@@ -240,17 +240,17 @@ export default function Home() {
               <span className="w-[90px] flex justify-center gap-2 items-center">
                 {coin.geckoUrl && (
                   <a href={coin.geckoUrl} target="_blank" rel="noopener noreferrer" title="CoinGecko"
-                     className="text-[10px] text-slate-600 hover:text-emerald-400 transition-colors font-semibold">
+                     className="text-[11px] text-emerald-500/70 hover:text-emerald-400 transition-colors font-bold">
                     CG
                   </a>
                 )}
                 <a href="https://defillama.com/stablecoins" target="_blank" rel="noopener noreferrer" title="DeFiLlama"
-                   className="text-[10px] text-slate-600 hover:text-blue-400 transition-colors font-semibold">
+                   className="text-[11px] text-blue-500/70 hover:text-blue-400 transition-colors font-bold">
                   DL
                 </a>
                 {coin.whitepaperUrl && (
                   <a href={coin.whitepaperUrl} target="_blank" rel="noopener noreferrer" title="Docs / Whitepaper"
-                     className="text-[10px] text-slate-600 hover:text-purple-400 transition-colors font-semibold">
+                     className="text-[11px] text-purple-400/70 hover:text-purple-300 transition-colors font-bold">
                     docs
                   </a>
                 )}
