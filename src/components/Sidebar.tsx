@@ -74,9 +74,6 @@ export default function Sidebar() {
               <span className="text-purple-500 text-sm font-bold ml-1">info</span>
             </h1>
           </div>
-          <button onClick={cycleTheme} className="theme-toggle" title={`Theme: ${theme} — click to change`}>
-            {THEME_ICONS[theme] || "🎨"}
-          </button>
         </div>
         <div className="flex items-center gap-2 mt-1">
           <div className="live-dot" />
@@ -115,10 +112,15 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-2 pt-4 border-t" style={{ borderColor: "var(--glass-border)" }}>
-        <p className="text-[10px] leading-relaxed" style={{ color: "var(--text-muted)" }}>
-          <span style={{ opacity: 0.6 }}>not financial advice</span>
-        </p>
+      <div className="px-2 pt-4 border-t hidden md:block" style={{ borderColor: "var(--glass-border)" }}>
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-[10px] leading-relaxed" style={{ color: "var(--text-muted)" }}>
+            <span style={{ opacity: 0.6 }}>not financial advice</span>
+          </p>
+          <button onClick={cycleTheme} className="theme-toggle" title={`Theme: ${theme} — click to change`}>
+            {THEME_ICONS[theme] || "🎨"}
+          </button>
+        </div>
       </div>
     </div>
     </>
