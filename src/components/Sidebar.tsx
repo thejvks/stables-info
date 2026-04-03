@@ -84,7 +84,6 @@ export default function Sidebar() {
       {/* Footer */}
       <div className="px-2 pt-4 border-t" style={{ borderColor: "var(--glass-border)" }}>
         <p className="text-[10px] leading-relaxed" style={{ color: "var(--text-muted)" }}>
-          62 stablecoins<br/>141 blockchains<br/>
           <span style={{ opacity: 0.6 }}>not financial advice</span>
         </p>
       </div>
