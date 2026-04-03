@@ -62,14 +62,14 @@ export default function Sidebar() {
 
     {/* Sidebar */}
     <div className={`sidebar fixed left-0 top-0 h-screen w-[220px] flex flex-col py-6 px-4 z-50 transition-transform duration-300 ${mobileOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
-      {/* Logo + theme toggle */}
-      <div className="mb-8 px-2">
+      {/* Logo + theme toggle — hidden on mobile since mobile top bar handles it */}
+      <div className="mb-8 px-2 hidden md:block">
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-black tracking-tight">
             <span style={{ color: "var(--text-primary)" }}>stables</span>
             <span className="text-purple-500 text-sm font-bold ml-1">info</span>
           </h1>
-          <button onClick={cycleTheme} className="theme-toggle hidden md:flex" title={`Theme: ${theme} — click to change`}>
+          <button onClick={cycleTheme} className="theme-toggle" title={`Theme: ${theme} — click to change`}>
             {THEME_ICONS[theme] || "🎨"}
           </button>
         </div>
