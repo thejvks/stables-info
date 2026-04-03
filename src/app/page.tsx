@@ -158,16 +158,27 @@ export default function Home() {
               <span className={`w-[75px] text-right text-sm ${volColor}`}>{fmt(coin.volume24h)}</span>
 
               <span className="w-[120px] flex justify-center gap-0.5 items-center">
-                {coin.chains.slice(0, 4).map((ch) => (
-                  <img
-                    key={ch.chain}
-                    src={ch.logo || CHAIN_LOGOS[ch.chain] || ""}
-                    alt={ch.chain}
-                    title={`${ch.chain}: ${fmt(ch.supply)}`}
-                    className="w-4 h-4 rounded-full"
-                    loading="lazy"
-                  />
-                ))}
+                {coin.chains.slice(0, 4).map((ch) => {
+                  const logo = ch.logo || CHAIN_LOGOS[ch.chain] || "";
+                  return logo ? (
+                    <img
+                      key={ch.chain}
+                      src={logo}
+                      alt={ch.chain}
+                      title={`${ch.chain}: ${fmt(ch.supply)}`}
+                      className="w-4 h-4 rounded-full"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span
+                      key={ch.chain}
+                      title={`${ch.chain}: ${fmt(ch.supply)}`}
+                      className="w-4 h-4 rounded-full bg-purple-800 flex items-center justify-center text-[7px] text-purple-300 font-bold"
+                    >
+                      {ch.chain[0]}
+                    </span>
+                  );
+                })}
                 {coin.chains.length > 4 && (
                   <span className="text-[9px] text-slate-600 ml-0.5">+{coin.chains.length - 4}</span>
                 )}
