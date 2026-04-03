@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "stables info — Stablecoin Risk Intelligence",
   description: "Real-time monitoring of 62+ stablecoins across 141 blockchains",
+  icons: { icon: "/icon.svg" },
 };
 
 export default function RootLayout({

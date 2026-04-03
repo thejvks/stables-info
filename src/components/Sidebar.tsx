@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import Logo from "./Logo";
 
 const NAV_ITEMS = [
   { href: "/", label: "Peg Monitor", icon: "M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" },
@@ -50,7 +51,8 @@ export default function Sidebar() {
           }
         </svg>
       </button>
-      <span className="font-black text-sm ml-2" style={{ color: "var(--text-primary)" }}>stables <span className="text-purple-500 text-xs">info</span></span>
+      <Logo size={28} />
+      <span className="font-black text-sm ml-1" style={{ color: "var(--text-primary)" }}>stables <span className="text-purple-500 text-xs">info</span></span>
       <div className="live-dot ml-2" />
       <button onClick={cycleTheme} className="theme-toggle ml-auto !w-8 !h-8 text-sm">
         {THEME_ICONS[theme] || "🎨"}
@@ -65,10 +67,13 @@ export default function Sidebar() {
       {/* Logo + theme toggle — hidden on mobile since mobile top bar handles it */}
       <div className="mb-8 px-2 hidden md:block">
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-black tracking-tight">
-            <span style={{ color: "var(--text-primary)" }}>stables</span>
-            <span className="text-purple-500 text-sm font-bold ml-1">info</span>
-          </h1>
+          <div className="flex items-center gap-2">
+            <Logo size={32} />
+            <h1 className="text-xl font-black tracking-tight">
+              <span style={{ color: "var(--text-primary)" }}>stables</span>
+              <span className="text-purple-500 text-sm font-bold ml-1">info</span>
+            </h1>
+          </div>
           <button onClick={cycleTheme} className="theme-toggle" title={`Theme: ${theme} — click to change`}>
             {THEME_ICONS[theme] || "🎨"}
           </button>
