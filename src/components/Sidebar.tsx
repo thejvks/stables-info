@@ -69,7 +69,7 @@ export default function Sidebar() {
             <span style={{ color: "var(--text-primary)" }}>stables</span>
             <span className="text-purple-500 text-sm font-bold ml-1">info</span>
           </h1>
-          <button onClick={cycleTheme} className="theme-toggle" title={`Theme: ${theme} — click to change`}>
+          <button onClick={cycleTheme} className="theme-toggle hidden md:flex" title={`Theme: ${theme} — click to change`}>
             {THEME_ICONS[theme] || "🎨"}
           </button>
         </div>

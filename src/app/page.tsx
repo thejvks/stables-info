@@ -130,16 +130,16 @@ export default function Home() {
       </div>
 
       {/* Table header */}
-      <div className="flex items-center px-4 py-2 text-[10px] uppercase tracking-widest text-slate-400 font-semibold border-b border-purple-900/20 sticky top-0 z-10" style={{ background: "var(--bg-primary)" }}>
-        <span className="w-10">#</span>
-        <span className="w-7"></span>
+      <div className="flex items-center px-2 md:px-4 py-2 text-[10px] uppercase tracking-widest text-slate-400 font-semibold border-b border-purple-900/20 sticky top-0 z-10" style={{ background: "var(--bg-primary)" }}>
+        <span className="w-8 md:w-10">#</span>
+        <span className="w-6 md:w-7"></span>
         <span className="flex-1 min-w-0">Coin</span>
-        <span className="w-[90px] text-right">Price</span>
-        <span className="w-[80px] text-right">Dev</span>
-        <span className="w-[85px] text-right">Supply</span>
-        <span className="w-[75px] text-right">Vol 24h</span>
-        <span className="w-[120px] text-center">Chains</span>
-        <span className="w-[90px] text-center">Links</span>
+        <span className="w-[70px] md:w-[90px] text-right">Price</span>
+        <span className="w-[60px] md:w-[80px] text-right">Dev</span>
+        <span className="w-[65px] md:w-[85px] text-right hidden sm:block">Supply</span>
+        <span className="w-[75px] text-right hidden lg:block">Vol 24h</span>
+        <span className="w-[120px] text-center hidden md:block">Chains</span>
+        <span className="w-[90px] text-center hidden md:block">Links</span>
       </div>
 
       {/* Coin rows */}
@@ -168,9 +168,9 @@ export default function Home() {
               className={`coin-row ${devClass} ${i % 2 === 0 ? "" : "bg-purple-950/10"}`}
               title={coin.tldr}
             >
-              <span className="w-10 text-xs text-slate-600 font-semibold">#{coin.rank}</span>
+              <span className="w-8 md:w-10 text-[10px] md:text-xs text-slate-600 font-semibold">#{coin.rank}</span>
 
-              <span className="w-7">
+              <span className="w-6 md:w-7">
                 {coin.logo ? (
                   <img src={coin.logo} alt={coin.symbol} className="w-5 h-5 rounded-full" loading="lazy" />
                 ) : (
@@ -189,11 +189,11 @@ export default function Home() {
                 )}
               </span>
 
-              <span className="w-[90px] text-right text-white font-mono font-bold text-sm">
+              <span className="w-[70px] md:w-[90px] text-right text-white font-mono font-bold text-xs md:text-sm">
                 ${coin.price.toFixed(4)}
               </span>
 
-              <span className="w-[80px] text-right">
+              <span className="w-[60px] md:w-[80px] text-right">
                 {coin.yieldBearing ? (
                   <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-purple-500/10 text-purple-400">{coin.deviation.toFixed(1)}%</span>
                 ) : (
@@ -205,11 +205,11 @@ export default function Home() {
                 )}
               </span>
 
-              <span className="w-[85px] text-right text-slate-400 text-sm font-medium">{fmt(coin.supply)}</span>
+              <span className="w-[65px] md:w-[85px] text-right text-slate-400 text-xs md:text-sm font-medium hidden sm:block">{fmt(coin.supply)}</span>
 
-              <span className={`w-[75px] text-right text-sm ${volColor}`}>{fmt(coin.volume24h)}</span>
+              <span className={`w-[75px] text-right text-sm hidden lg:block ${volColor}`}>{fmt(coin.volume24h)}</span>
 
-              <span className="w-[120px] flex justify-center gap-0.5 items-center">
+              <span className="w-[120px] justify-center gap-0.5 items-center hidden md:flex">
                 {coin.chains.slice(0, 4).map((ch) => {
                   const logo = ch.logo || CHAIN_LOGOS[ch.chain] || "";
                   return logo ? (
@@ -237,7 +237,7 @@ export default function Home() {
                 {coin.chains.length === 0 && <span className="text-[10px] text-slate-700">—</span>}
               </span>
 
-              <span className="w-[90px] flex justify-center gap-2 items-center">
+              <span className="w-[90px] justify-center gap-2 items-center hidden md:flex">
                 {coin.geckoUrl && (
                   <a href={coin.geckoUrl} target="_blank" rel="noopener noreferrer" title="CoinGecko"
                      className="text-[11px] text-emerald-500/70 hover:text-emerald-400 transition-colors font-bold">
