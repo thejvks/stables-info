@@ -21,9 +21,10 @@ async function fetchChainData() {
   return data.peggedAssets || [];
 }
 
-// Fetch 24h volume from CoinGecko (free tier)
-async function fetchVolumes(geckoIds: string[]): Promise<Record<string, number>> {
+// Fetch 24h volume AND logos from CoinGecko (free tier)
+async function fetchCoinGeckoData(geckoIds: string[]): Promise<{ volumes: Record<string, number>; logos: Record<string, string> }> {
   const volumes: Record<string, number> = {};
+  const logos: Record<string, string> = {};
   try {
     for (let i = 0; i < geckoIds.length; i += 50) {
       const batch = geckoIds.slice(i, i + 50).join(",");
@@ -35,6 +36,7 @@ async function fetchVolumes(geckoIds: string[]): Promise<Record<string, number>>
         const coins = await res.json();
         for (const coin of coins) {
           volumes[coin.id] = coin.total_volume || 0;
+          if (coin.image) logos[coin.id] = coin.image;
         }
       }
       // Rate limit
@@ -43,7 +45,7 @@ async function fetchVolumes(geckoIds: string[]): Promise<Record<string, number>>
   } catch {
     // Volume is optional, don't fail the whole request
   }
-  return volumes;
+  return { volumes, logos };
 }
 
 function fmtSupply(val: number): string {
@@ -73,7 +75,7 @@ export async function GET() {
       .map((a: any) => a.gecko_id || COIN_META[a.symbol]?.geckoId || "")
       .filter(Boolean);
 
-    const volumes = await fetchVolumes(geckoIds);
+    const { volumes, logos: geckoLogos } = await fetchCoinGeckoData(geckoIds);
 
     // Build coin list
     const coins = filtered.map((asset: any, idx: number) => {
@@ -124,7 +126,7 @@ export async function GET() {
         tldr: meta?.tldr || "",
         backing: meta?.backing || "",
         risk: meta?.risk || "",
-        logo: meta?.logo || "",
+        logo: meta?.logo || geckoLogos[geckoId] || "",
         geckoId,
         geckoUrl: geckoId ? `https://www.coingecko.com/en/coins/${geckoId}` : "",
         whitepaperUrl: meta?.whitepaperUrl || "",
