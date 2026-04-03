@@ -126,7 +126,7 @@ export async function GET() {
         tldr: meta?.tldr || "",
         backing: meta?.backing || "",
         risk: meta?.risk || "",
-        logo: meta?.logo || GECKO_LOGOS[geckoId] || geckoLogos[geckoId] || "",
+        logo: GECKO_LOGOS[geckoId] || geckoLogos[geckoId] || meta?.logo || "",
         geckoId,
         geckoUrl: geckoId ? `https://www.coingecko.com/en/coins/${geckoId}` : "",
         whitepaperUrl: meta?.whitepaperUrl || "",
