@@ -47,7 +47,7 @@ export default function WikiPage() {
   });
 
   return (
-    <div className="max-w-[1000px] mx-auto">
+    <div className="max-w-[1200px] mx-auto">
       <div className="flex items-center gap-3 mb-4">
         <h2 className="text-lg font-bold text-slate-200">Coin Wiki</h2>
         <span className="text-xs text-slate-500">{filtered.length} stablecoins</span>
@@ -102,9 +102,10 @@ export default function WikiPage() {
                 <span className="text-slate-500 text-sm w-20 text-right">{fmt(coin.supply)}</span>
               </div>
 
-              {/* Expanded detail */}
+              {/* Expanded detail — side by side layout */}
               {isOpen && (
                 <div className="px-4 pb-4 pt-0 border-t border-purple-900/20">
+                  {/* Stats row */}
                   <div className="grid grid-cols-3 gap-4 mt-4 mb-4">
                     <div className="stat-card !p-3">
                       <div className="text-lg font-bold text-white font-mono">${coin.price.toFixed(4)}</div>
@@ -122,6 +123,10 @@ export default function WikiPage() {
                     </div>
                   </div>
 
+                  {/* Two columns: Info left, Chains right */}
+                  <div className="grid grid-cols-2 gap-6">
+                    {/* LEFT — coin info */}
+                    <div>
                   {coin.type && (
                     <div className="mb-3">
                       <span className="text-[10px] text-slate-600 uppercase tracking-wider">Type</span>
@@ -153,28 +158,6 @@ export default function WikiPage() {
                     </div>
                   )}
 
-                  {/* Chain distribution */}
-                  {coin.chains.length > 0 && (
-                    <div className="mb-3">
-                      <span className="text-[10px] text-slate-600 uppercase tracking-wider">Chain Distribution</span>
-                      <div className="mt-2 space-y-1.5">
-                        {coin.chains.map((ch) => {
-                          const pct = totalChainSupply > 0 ? (ch.supply / totalChainSupply) * 100 : 0;
-                          return (
-                            <div key={ch.chain} className="flex items-center gap-2">
-                              {ch.logo ? <img src={ch.logo} className="w-4 h-4 rounded-full" alt={ch.chain} /> : <div className="w-4 h-4 rounded-full bg-purple-800" />}
-                              <span className="text-xs text-slate-400 w-20">{ch.chain}</span>
-                              <div className="flex-1 h-2 bg-purple-950/30 rounded overflow-hidden">
-                                <div className="h-full rounded bg-purple-500" style={{ width: `${pct}%` }} />
-                              </div>
-                              <span className="text-[10px] text-slate-500 w-12 text-right">{pct.toFixed(1)}%</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
                   {/* Links */}
                   <div className="flex gap-3 mt-4">
                     {coin.geckoUrl && (
@@ -189,6 +172,38 @@ export default function WikiPage() {
                         Whitepaper / Docs
                       </a>
                     )}
+                  </div>
+                    </div>
+
+                    {/* RIGHT — chain distribution */}
+                    <div>
+                  {coin.chains.length > 0 && (
+                    <div>
+                      <span className="text-[10px] text-slate-600 uppercase tracking-wider">Chain Distribution</span>
+                      <div className="mt-2 space-y-1.5 max-h-[300px] overflow-y-auto pr-1">
+                        {coin.chains.slice(0, 10).map((ch) => {
+                          const pct = totalChainSupply > 0 ? (ch.supply / totalChainSupply) * 100 : 0;
+                          return (
+                            <div key={ch.chain} className="flex items-center gap-2">
+                              {ch.logo ? <img src={ch.logo} className="w-4 h-4 rounded-full" alt={ch.chain} /> : <div className="w-4 h-4 rounded-full bg-purple-800 flex items-center justify-center text-[6px] text-purple-300">{ch.chain[0]}</div>}
+                              <span className="text-xs text-slate-400 w-20 truncate">{ch.chain}</span>
+                              <div className="flex-1 h-2 bg-purple-950/30 rounded overflow-hidden">
+                                <div className="h-full rounded bg-purple-500" style={{ width: `${pct}%` }} />
+                              </div>
+                              <span className="text-[10px] text-slate-500 w-12 text-right">{pct.toFixed(1)}%</span>
+                            </div>
+                          );
+                        })}
+                        {coin.chains.length > 10 && (
+                          <div className="text-[10px] text-slate-600 text-center mt-1">+{coin.chains.length - 10} more chains</div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  {coin.chains.length === 0 && (
+                    <div className="text-sm text-slate-600 italic">No chain data available</div>
+                  )}
+                    </div>
                   </div>
                 </div>
               )}
