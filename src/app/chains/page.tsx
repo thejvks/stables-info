@@ -25,6 +25,9 @@ export default function ChainsPage() {
   const [data, setData] = useState<ApiData | null>(null);
   const [selectedCoin, setSelectedCoin] = useState("");
   const [loading, setLoading] = useState(true);
+  const [showAllChains, setShowAllChains] = useState(false);
+  const [showAllCoins, setShowAllCoins] = useState(false);
+  const [chainSearch, setChainSearch] = useState("");
 
   useEffect(() => {
     fetch("/api/coins")
@@ -67,9 +70,25 @@ export default function ChainsPage() {
 
       {/* Chain bars */}
       <div className="glass-card p-6 mb-6">
-        <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Supply by Blockchain</h3>
+        <div className="flex items-center gap-3 mb-4">
+          <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Supply by Blockchain</h3>
+          <input
+            type="text"
+            placeholder="Search chain..."
+            value={chainSearch}
+            onChange={(e) => { setChainSearch(e.target.value); setShowAllChains(true); }}
+            className="ml-auto px-3 py-1.5 rounded-lg bg-purple-950/30 border border-purple-900/30 text-slate-200 placeholder-slate-600 focus:border-purple-500/50 focus:outline-none text-xs w-36"
+          />
+        </div>
+        {(() => {
+          const q = chainSearch.toLowerCase();
+          let filteredChains = q ? chains.filter(c => c.name.toLowerCase().includes(q)) : chains;
+          const visibleChains = showAllChains || q ? filteredChains : filteredChains.slice(0, 20);
+          const hasMoreChains = !showAllChains && !q && filteredChains.length > 20;
+          return (<>
+        <div className="text-xs text-slate-600 mb-2">Showing {visibleChains.length} of {filteredChains.length} chains</div>
         <div className="space-y-3">
-          {chains.map((chain) => {
+          {visibleChains.map((chain) => {
             const pct = (chain.supply / totalSupply) * 100;
             return (
               <div key={chain.name} className="flex items-center gap-3">
@@ -95,14 +114,27 @@ export default function ChainsPage() {
             );
           })}
         </div>
+        {hasMoreChains && (
+          <button onClick={() => setShowAllChains(true)}
+            className="mx-auto mt-4 px-6 py-2 rounded-xl bg-purple-600/20 border border-purple-500/30 text-purple-300 text-sm font-medium hover:bg-purple-600/30 transition-colors block">
+            Show all {filteredChains.length} chains
+          </button>
+        )}
+        {showAllChains && !q && filteredChains.length > 20 && (
+          <button onClick={() => setShowAllChains(false)}
+            className="mx-auto mt-2 px-4 py-1 text-slate-600 text-xs hover:text-slate-400 transition-colors block">
+            Collapse
+          </button>
+        )}
+        </>); })()}
       </div>
 
       {/* Coin grid — chain availability */}
       <div className="flex items-center gap-3 mb-4">
         <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">All Coins — Chain Availability</h3>
       </div>
-      <div className="grid grid-cols-5 gap-3 mb-6">
-        {coins.map((coin) => (
+      <div className="grid grid-cols-5 gap-3 mb-4">
+        {(showAllCoins ? coins : coins.slice(0, 20)).map((coin) => (
           <div key={coin.symbol} className="glass-card p-3 text-center cursor-pointer" onClick={() => setSelectedCoin(coin.symbol)}>
             <div className="flex items-center justify-center gap-1.5 mb-1">
               {coin.logo && <img src={coin.logo} alt={coin.symbol} className="w-4 h-4 rounded-full" loading="lazy" />}
@@ -119,6 +151,12 @@ export default function ChainsPage() {
           </div>
         ))}
       </div>
+      {!showAllCoins && coins.length > 20 && (
+        <button onClick={() => setShowAllCoins(true)}
+          className="mx-auto mb-6 px-6 py-2 rounded-xl bg-purple-600/20 border border-purple-500/30 text-purple-300 text-sm font-medium hover:bg-purple-600/30 transition-colors block">
+          Show all {coins.length} coins
+        </button>
+      )}
 
       {/* Drill down */}
       {selectedCoin && drillCoin && (

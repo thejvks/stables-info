@@ -35,10 +35,21 @@ function StatCard({ value, label, color }: { value: string; label: string; color
   );
 }
 
+const TIERS = [
+  { label: "All", filter: () => true },
+  { label: ">$1B", filter: (c: Coin) => c.supply >= 1e9 },
+  { label: "$100M–$1B", filter: (c: Coin) => c.supply >= 1e8 && c.supply < 1e9 },
+  { label: "<$100M", filter: (c: Coin) => c.supply < 1e8 },
+  { label: "Yield", filter: (c: Coin) => c.yieldBearing },
+];
+
 export default function Home() {
   const [data, setData] = useState<ApiData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
+  const [tier, setTier] = useState(0);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     fetch("/api/coins")
@@ -79,13 +90,40 @@ export default function Home() {
         <StatCard value={`${data.maxDeviation}%`} label="Max Deviation" color={data.maxDeviation > 1 ? "text-red-400" : "text-emerald-400"} />
       </div>
 
-      {/* Section header */}
-      <div className="flex items-center gap-3 mb-4">
+      {/* Search + Filter bar */}
+      <div className="flex items-center gap-3 mb-4 flex-wrap">
         <h2 className="text-lg font-bold text-slate-200">Peg Status</h2>
         <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
           <div className="live-dot" />
           <span className="text-[10px] text-emerald-400 uppercase font-semibold tracking-wider">Live</span>
         </div>
+
+        {/* Search */}
+        <input
+          type="text"
+          placeholder="Search coin..."
+          value={search}
+          onChange={(e) => { setSearch(e.target.value); setShowAll(true); }}
+          className="ml-4 px-3 py-1.5 rounded-lg bg-purple-950/30 border border-purple-900/30 text-slate-200 placeholder-slate-600 focus:border-purple-500/50 focus:outline-none text-xs w-40"
+        />
+
+        {/* Tier tabs */}
+        <div className="flex gap-1 ml-2">
+          {TIERS.map((t, idx) => (
+            <button
+              key={t.label}
+              onClick={() => { setTier(idx); setShowAll(false); }}
+              className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wider transition-colors ${
+                tier === idx
+                  ? "bg-purple-600/30 text-purple-300 border border-purple-500/30"
+                  : "text-slate-600 hover:text-slate-400 border border-transparent"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
         <span className="text-xs text-slate-600 ml-auto">
           Updated {new Date(data.updatedAt).toLocaleTimeString()}
         </span>
@@ -105,8 +143,22 @@ export default function Home() {
       </div>
 
       {/* Coin rows */}
+      {(() => {
+        const q = search.toLowerCase();
+        let filtered = coins.filter(TIERS[tier].filter);
+        if (q) filtered = filtered.filter(c =>
+          c.symbol.toLowerCase().includes(q) || c.name.toLowerCase().includes(q)
+        );
+        const DEFAULT_SHOW = 20;
+        const visible = showAll || q ? filtered : filtered.slice(0, DEFAULT_SHOW);
+        const hasMore = !showAll && !q && filtered.length > DEFAULT_SHOW;
+
+        return (
       <div className="flex flex-col">
-        {coins.map((coin, i) => {
+        <div className="text-xs text-slate-600 px-4 py-1">
+          Showing {visible.length} of {filtered.length} stablecoins
+        </div>
+        {visible.map((coin, i) => {
           const devClass = coin.yieldBearing ? "safe" : coin.deviation < 0.1 ? "safe" : coin.deviation < 0.5 ? "warn" : "danger";
           const volColor = coin.volume24h > 1e8 ? "text-emerald-400" : coin.volume24h > 1e6 ? "text-slate-400" : "text-slate-600";
 
@@ -206,7 +258,25 @@ export default function Home() {
             </div>
           );
         })}
+        {hasMore && (
+          <button
+            onClick={() => setShowAll(true)}
+            className="mx-auto mt-4 px-6 py-2 rounded-xl bg-purple-600/20 border border-purple-500/30 text-purple-300 text-sm font-medium hover:bg-purple-600/30 transition-colors"
+          >
+            Show all {filtered.length} stablecoins
+          </button>
+        )}
+        {showAll && !q && filtered.length > 20 && (
+          <button
+            onClick={() => setShowAll(false)}
+            className="mx-auto mt-4 px-6 py-2 rounded-xl bg-purple-950/30 border border-purple-900/30 text-slate-500 text-xs hover:text-slate-400 transition-colors"
+          >
+            Collapse to top 20
+          </button>
+        )}
       </div>
+        );
+      })()}
 
       {/* Footer */}
       <div className="text-center text-[11px] text-slate-700 mt-8 pb-4">
