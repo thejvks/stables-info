@@ -118,6 +118,26 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   min-height: 100vh;
   transition: background 0.3s ease, color 0.3s ease;
+  /* Custom purple crosshair cursor */
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='3' fill='none' stroke='%237c3aed' stroke-width='1.5' opacity='0.8'/%3E%3Cline x1='12' y1='2' x2='12' y2='8' stroke='%237c3aed' stroke-width='1' opacity='0.5'/%3E%3Cline x1='12' y1='16' x2='12' y2='22' stroke='%237c3aed' stroke-width='1' opacity='0.5'/%3E%3Cline x1='2' y1='12' x2='8' y2='12' stroke='%237c3aed' stroke-width='1' opacity='0.5'/%3E%3Cline x1='16' y1='12' x2='22' y2='12' stroke='%237c3aed' stroke-width='1' opacity='0.5'/%3E%3Ccircle cx='12' cy='12' r='1' fill='%237c3aed'/%3E%3C/svg%3E") 12 12, crosshair;
+}
+
+/* Pointer cursor for interactive elements */
+a, button, .coin-row, .glass-card, .sidebar-item, .theme-toggle, [role="button"] {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M5 3l14 9-6 2-4 7z' fill='%237c3aed' stroke='%23c4b5fd' stroke-width='1' opacity='0.9'/%3E%3C/svg%3E") 5 3, pointer;
+}
+
+/* Cursor glow trail */
+.cursor-glow {
+  position: fixed;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s;
 }
 
 /* Glassmorphism */
