@@ -174,21 +174,20 @@ export default function Home() {
                 {coin.chains.length === 0 && <span className="text-[10px] text-slate-700">—</span>}
               </span>
 
-              <span className="w-[90px] flex justify-center gap-1.5 items-center">
+              <span className="w-[90px] flex justify-center gap-2 items-center">
                 {coin.geckoUrl && (
                   <a href={coin.geckoUrl} target="_blank" rel="noopener noreferrer" title="CoinGecko"
-                     className="opacity-40 hover:opacity-100 transition-opacity">
-                    <img src="https://static.coingecko.com/s/thumbnail-007177f3ecca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf.png" className="w-3.5 h-3.5 rounded" alt="CG" />
+                     className="text-[10px] text-slate-600 hover:text-emerald-400 transition-colors font-semibold">
+                    CG
                   </a>
                 )}
                 <a href="https://defillama.com/stablecoins" target="_blank" rel="noopener noreferrer" title="DeFiLlama"
-                   className="opacity-40 hover:opacity-100 transition-opacity">
-                  <img src="https://icons.llamao.fi/icons/protocols/defillama?w=16&h=16" className="w-3.5 h-3.5 rounded" alt="DL"
-                       onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+                   className="text-[10px] text-slate-600 hover:text-blue-400 transition-colors font-semibold">
+                  DL
                 </a>
                 {coin.whitepaperUrl && (
                   <a href={coin.whitepaperUrl} target="_blank" rel="noopener noreferrer" title="Docs / Whitepaper"
-                     className="text-[10px] text-slate-600 hover:text-purple-400 transition-colors font-medium">
+                     className="text-[10px] text-slate-600 hover:text-purple-400 transition-colors font-semibold">
                     docs
                   </a>
                 )}
