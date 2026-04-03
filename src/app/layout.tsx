@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "stables info — Stablecoin Risk Intelligence",
-  description: "Real-time monitoring of 61+ stablecoins across 15 blockchains",
+  description: "Real-time monitoring of 62+ stablecoins across 141 blockchains",
 };
 
 export default function RootLayout({
@@ -30,7 +30,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex">
         <Sidebar />
-        <main className="flex-1 overflow-y-auto p-6 ml-[220px]">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 ml-0 md:ml-[220px] pt-16 md:pt-6">
           {children}
         </main>
       </body>

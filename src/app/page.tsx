@@ -82,7 +82,7 @@ export default function Home() {
   return (
     <div className="max-w-[1400px] mx-auto">
       {/* Stats bar */}
-      <div className="grid grid-cols-5 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4 mb-6 md:mb-8">
         <StatCard value={fmt(data.totalSupply)} label="Total Supply" color="text-emerald-400" />
         <StatCard value={String(data.totalCoins)} label="Stablecoins" color="text-blue-400" />
         <StatCard value={String(data.totalChains)} label="Blockchains" color="text-purple-400" />
