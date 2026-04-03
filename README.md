@@ -2,7 +2,7 @@
 
 Real-time stablecoin risk intelligence dashboard — 62 stablecoins, 141 blockchains.
 
-**[Live Dashboard](https://stablecoin-risk-intelligence-bnpk4c9zjtwenhlbyvrqzw.streamlit.app)**
+**[Live Dashboard](https://stables-info.vercel.app)**
 
 ## What It Does
 

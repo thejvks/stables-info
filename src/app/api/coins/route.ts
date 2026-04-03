@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { COIN_META, CHAIN_LOGOS, YIELD_BEARING_SYMBOLS } from "../../../lib/coins-data";
+import { COIN_META, CHAIN_LOGOS, YIELD_BEARING_SYMBOLS, GECKO_LOGOS } from "../../../lib/coins-data";
 
 // Fetch stablecoin data from DeFiLlama (free, no API key)
 async function fetchDefiLlama() {
@@ -126,7 +126,7 @@ export async function GET() {
         tldr: meta?.tldr || "",
         backing: meta?.backing || "",
         risk: meta?.risk || "",
-        logo: meta?.logo || geckoLogos[geckoId] || "",
+        logo: meta?.logo || GECKO_LOGOS[geckoId] || geckoLogos[geckoId] || "",
         geckoId,
         geckoUrl: geckoId ? `https://www.coingecko.com/en/coins/${geckoId}` : "",
         whitepaperUrl: meta?.whitepaperUrl || "",
