@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# stables info
 
-## Getting Started
+Real-time stablecoin risk intelligence dashboard — 62 stablecoins, 141 blockchains.
 
-First, run the development server:
+**[Live Dashboard](https://stablecoin-risk-intelligence-bnpk4c9zjtwenhlbyvrqzw.streamlit.app)**
+
+## What It Does
+
+- Monitors 62+ stablecoins across 141 blockchains in real-time
+- Tracks peg deviations, supply, 24h volume, and chain distribution
+- Detects anomalies: peg breaks, supply spikes, liquidity drains
+- Coin Wiki with whitepaper links, backing info, and risk analysis
+- War Room with historical crisis replays (USDC SVB, UST, FTX, COVID)
+
+## Tech Stack
+
+- **Frontend:** Next.js + React + Tailwind CSS
+- **Data:** DeFiLlama + CoinGecko APIs (free, no API keys needed)
+- **Hosting:** Vercel (free)
+
+## Run Locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Pages
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Peg Monitor** — live leaderboard of all stablecoins sorted by market cap
+- **Chain X-Ray** — cross-chain supply distribution across 141 blockchains
+- **Alert Feed** — anomaly detection alerts
+- **Coin Wiki** — searchable encyclopedia with type, issuer, backing, risks
+- **War Room** — historical crisis stress tests
