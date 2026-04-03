@@ -13,9 +13,9 @@ const NAV_ITEMS = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const THEMES = ["dark", "midnight", "emerald", "slate", "light"] as const;
+  const THEMES = ["dark", "midnight", "emerald", "slate"] as const;
   const THEME_ICONS: Record<string, string> = {
-    dark: "🌑", midnight: "🌊", emerald: "🌿", slate: "🪨", light: "☀️",
+    dark: "🌑", midnight: "🌊", emerald: "🌿", slate: "🪨",
   };
   const [theme, setTheme] = useState<string>("dark");
 
